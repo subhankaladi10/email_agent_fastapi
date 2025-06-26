@@ -1,13 +1,13 @@
-# filename: main.py
 from fastapi import FastAPI, Request
+from fastapi.responses import PlainTextResponse
 
 app = FastAPI()
 
 latest_reply = None
 
-@app.route('/')
+@app.get("/", response_class=PlainTextResponse)
 def index():
-    return 'Webhook Running ✅'
+    return "Webhook Running ✅"
 
 @app.post("/whatsapp-webhook")
 async def whatsapp_webhook(request: Request):
@@ -17,3 +17,7 @@ async def whatsapp_webhook(request: Request):
     latest_reply = incoming_msg
     print(f"📥 WhatsApp reply received: {incoming_msg}")
     return {"status": "received"}
+
+@app.get("/latest")
+def get_latest():
+    return {"reply": latest_reply}
